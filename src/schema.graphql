@@ -1,4 +1,48 @@
 type Query {
     system(version: String!, language: String!, calType: String!): System_Describe
+    year(version: String!, language: String!, calType: String!, year: Int!): Litugical,
+    month(version: String!, language: String!, calType: String!, year: Int!, month: Int!): [Calendar],
+    day(version: String!, language: String!, calType: String!, day: String!): Calendar
 }
 
+
+type System_Describe {
+    system: System
+    sanctorale: Sanctorale
+}
+
+type System {
+    promulgated: Int
+    effective_since: Int
+    desc: String
+}
+
+type Sanctorale {
+    title: String
+    language: String
+}
+
+type ECalendar {
+    calendars: [Calendar]
+    litugical: Litugical    
+}
+
+type Litugical {
+    lectionary: String
+    ferial_lectionary: Int
+}
+
+type Calendar {
+    date: String
+    season: String
+    season_week: Int
+    celebrations: [Celebration]
+    weekday: String
+}
+
+type Celebration {
+    title: String
+    colour: String
+    rank: String
+    rank_num: Float
+} 
