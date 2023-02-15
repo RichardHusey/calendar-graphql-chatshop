@@ -7,6 +7,7 @@ const calendarRequest = async (version: String, language: String, calType: Strin
   const isValidVersion = versionExpression.test(String(version).toLowerCase());
 
   if (!isValidVersion) {
+    console.log(version, "process is suspended due to .//");
     throw new Error("Version not in proper format");
   }
   //language validation
@@ -61,6 +62,8 @@ const Query = {
   month: async (root:unknown, args: IMonthQueryType) => {
     const { version, language, calType, year, month } = args;
     //month validation
+    if (month < 1 || month > 12)
+      throw new Error("Month value is not available, it must be from 1 to 12.");
     try {
       const res = await calendarRequest(
         version,
@@ -75,6 +78,23 @@ const Query = {
   },
   day: async (root:unknown, args: IDayQueryType) => {
     const { version, language, calType, day } = args;
+    const isAllLettersRegex = /[A-Za-z]*$/;
+    if (isAllLettersRegex.test(day.toString())) {
+      if (!(day.includes("today") || day.includes("yesterday") || day.includes("tomorrow"))) { 
+        console.log(123);
+        throw new Error("Day formaty is not available");
+      }
+    } else {
+      const numbers = day.split("/");
+      if (
+        parseInt(numbers[1]) < 1 ||
+        parseInt(numbers[1]) > 12 ||
+        parseInt(numbers[2]) < 1 ||
+        parseInt(numbers[2]) > 31
+      )
+        throw new Error("Invalid YY/MM/DD");
+    }
+
     try {
       const res = await calendarRequest(version, language, calType, day);
       return res;
